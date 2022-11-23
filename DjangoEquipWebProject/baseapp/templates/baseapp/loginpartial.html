@@ -1,20 +1,20 @@
-﻿{% if user.is_authenticated %}
-<form id="logoutForm" action="/logout/" method="post" class="navbar-right">
-    {% csrf_token %}
-    <ul class="nav navbar-nav navbar-right">
-        {% if user.is_superuser %}
-        <li><span class="navbar-brand">お疲れ様です。サイト管理者 {{ user.username }}</span></li>
-        {% elif user.is_staff %}
-        <li><span class="navbar-brand">お疲れ様です。{{ user.username }}</span></li>
-        {% else %}
-        <li><span class="navbar-brand">ようこそ。 {{ user.username }}</span></li>
-        {% endif %}
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log out</a></li>
-    </ul>
-</form>
+<div class="navbar-nav me-lg-5">
+    {% if user.is_authenticated %}
+    {% if user.is_superuser %}
+    <a class="nav-link">お疲れ様です。サイト管理者 {{ user.username }}</a>
+    {% elif user.is_staff %}
+    <a class="nav-link">お疲れ様です。{{ user.username }}</a>
+    {% else %}
+    <a class="nav-link">ようこそ。 {{ user.username }}</a>
+    {% endif %}
+    <form id="logoutForm" action="/logout/" method="post">
+        {% csrf_token %}
+        <a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
+    </form>
+</div>
 
 {% else %}
-<ul class="nav navbar-nav navbar-right">
-    <li><a href="{% url 'login' %}">Log in</a></li>
-</ul>
+<div class="navbar-nav me-lg-5">
+    <a class="nav-link " href="{% url 'login' %}">Log in</a>
+</div>
 {% endif %}

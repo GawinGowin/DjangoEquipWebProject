@@ -1,105 +1,111 @@
-﻿{% extends "baseapp/layout.html" %}
+{% extends "baseapp/layout.html" %}
 {% block content %}
 
-
 {% load staticfiles %}
-<div class="jumbotron">
-    <div class="col-md-10">
-        <h1>PageTitle</h1>
-        <h2>page_sub_title</h2>
-        
-    </div>
-    <div>
-        <img src="{% static 'baseapp/imgs/logo.png' %}" height="150">
+<div class ="container my-5">
+    <div class="row px-auto bg-light">
+        <div class="col-7">
+            <div class="py-5">
+                <h1>PageTitle</h1>
+                <h2>page_sub_title</h2>
+            </div>
+        </div>
+        <div class="col-5">
+            <img src="{% static 'baseapp/imgs/logo.png' %}" height="250">
+        </div>
     </div>
 </div>
 
 {% if user.is_authenticated %}
 
-<div class="row">
-    <div class="col-md-6" style="margin: 20px 0 20px; ">
-        <a href="{% url 'lend_create' %}">
-            <div class="col-md-8">
-                <div class="card-body">
-                    <h3 class="card-title">貸出</h3>
-                    <p class="card-text">新たに装備品を借りる場合の処理を行います。</p>
+<div class="container">
+    <div class="row row-cols-1 row-cols-lg-2 g-5">
+        <div class="col">
+            <a href="{% url 'lend_create' %}">
+            <div class="card h-100">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="{% static 'baseapp/imgs/lend.png' %}" width="150" height="150">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h3 class="card-title">貸出</h3>
+                            <p class="card-text">新たに装備品を借りる場合の処理を行います。</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <img src="{% static 'baseapp/imgs/lend.png' %}" width="120" height="120">
-            </div>
+            </a>
+        </div>
 
-        </a>
-    </div>
-
-    <div class="col-md-6" style="margin: 20px 0 20px; ">
-        <a href="{% url 'lend_list' %}">
-            <div class="col-md-8">
-                <div class="card-body">
-                    <h3 class="card-title">返却&貸出中アイテム</h3>
-                    <p class="card-text">
-                        現在あなたが借りているアイテムを表示します。
-                        返却手続きもこちらで行います。
-                    </p>
+        <div class="col">
+            <a href="{% url 'lend_list' %}">
+                <div class="card h-100">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img src="{% static 'baseapp/imgs/return.png' %}" width="150" height="150">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h3 class="card-title">返却&貸出中アイテム</h3>
+                                <p class="card-text">現在あなたが借りているアイテムを表示します。返却手続きもこちらで行います。</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <img src="{% static 'baseapp/imgs/return.png' %}" width="120" height="120">
-            </div>
-        </a>
-    </div>
+            </a>
+        </div>
 
-    <div class="col-md-6" style="margin: 20px 0 20px; ">
-        <a href="{% url 'list' %}">
-            <div class="col-md-8">
-                <div class="card-body">
-                    <h3 class="card-title">装備一覧</h3>
-                    <p class="card-text">装備品を一覧表示します。</p>
+        <div class="col">
+            <div class="card h-100">
+                <a href="{% url 'list' %}">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img src="{% static 'baseapp/imgs/list.png' %}" width="150" height="150">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h3 class="card-title">装備一覧</h3>
+                                <p class="card-text">装備品を一覧表示します。</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% if user.is_superuser or user.is_staff %}
+        <div class="col">
+            <div class="card h-100">
+                <a href="{% url 'admin:index' %}">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="{% static 'baseapp/imgs/admin.png' %}" width="150" height="150">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h3 class="card-title">管理者用ページ</h3>
+                            <p class="card-text">新規装備品の追加や新規メンバーの登録、そして貸出状況などを管理できます。一般ユーザーにはこのボタンは表示されないので、あなたは管理者ユーザーです。</p>
+                        </div>
+                    </div>
                 </div>
+                </a>
             </div>
-            <div class="col-md-4">
-                <img src="{% static 'baseapp/imgs/list.png' %}" width="120" height="120">
-            </div>
-        </a>
+        </div>
+        {% endif %}
     </div>
-
-    {% if user.is_superuser or user.is_staff %}
-    <div class="col-md-6" style="margin: 20px 0 20px; ">
-        <a href="{% url 'admin:index' %}">
-            <div class="col-md-8">
-                <div class="card-body">
-                    <h3 class="card-title">管理者用ページ</h3>
-                    <p class="card-text">
-                        新規装備品の追加や新規メンバーの登録、そして貸出状況などを管理できます。
-                        一般ユーザーにはこのボタンは表示されないので、あなたは管理者ユーザーです。
-                    </p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <img src="{% static 'baseapp/imgs/admin.png' %}" width="120" height="120">
-            </div>
-        </a>
-    </div>
-    {% endif %}
 </div>
 
 {% else %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-8" style="height: 800px;">
-            <div class="">
-                <h1>ようこそ</h1>
-                <p class="lead text-muted">
-                    道具管理サイトです。
-                </p>
-                <p>
-                    <a href="{% url 'login' %}" class="btn btn-primary">Log in &raquo;</a>
-                    <a href="{% url 'about' %}" class="btn btn-secondary">About &raquo;</a>
-                </p>
-            </div>
-
-        </div>
+<div class="row py-lg-5">
+    <div class="col-lg-5">
+      <h1>ようこそ</h1>
+      <p class="lead text-muted">管理サイトテンプレート</p>
+      <p>
+        <a href="{% url 'login' %}" class="btn btn-primary">Log in &raquo;</a>
+        <a href="{% url 'about' %}" class="btn btn-secondary">About &raquo;</a>
+    </p>
     </div>
 </div>
+
 {% endif %}
 {% endblock %}

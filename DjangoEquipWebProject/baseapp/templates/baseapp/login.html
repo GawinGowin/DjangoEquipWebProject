@@ -1,43 +1,47 @@
-﻿{% extends "baseapp/layout.html" %}
+{% extends "baseapp/layout.html" %}
 
 {% block content %}
 
-<h2>{{ title }}</h2>
+<div class = "container my-4">
+    <h2>{{ title }}</h2>
+    <h4>Use a local account to log in.</h4>
+    <p>新規でユーザー登録を行う場合は管理者ユーザーに問い合わせてください</p>
+    <hr/>
+</div>
+
 <div class="row">
-    <div class="col-md-8">
+    <div class="col">
         <section id="loginForm">
             <form action="." method="post" class="form-horizontal">
                 {% csrf_token %}
-                <h4>Use a local account to log in.</h4>
-                <p>新規でユーザー登録を行う場合は管理者ユーザーに問い合わせてください</p>
-                
-                <hr/>
-                <div class="form-group">
+                <div class="form-group py-2">
                     <label for="id_username" class="col-md-2 control-label">User name</label>
-                    <div class="col-md-10">
+                    <div class="col-lg-8 py-2">
                         {{ form.username }}
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group py-1">
                     <label for="id_password" class="col-md-2 control-label">Password</label>
-                    <div class="col-md-10">
+                    <div class="col-lg-8 py-2">
                         {{ form.password }}
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group py-1">
                     <div class="col-md-offset-2 col-md-2">
                         <input type="hidden" name="next" value="/" />
-                        <input type="submit" value="Log in" class="btn btn-default"/>
+                        <input type="submit" value="Log in" class="btn btn-primary"/>
                     </div>
                 </div>
-                    {% if form.errors %}
+                {% if form.errors %}
+                <div class="py-1">
                     <p class="validation-summary-errors">パスワードが違います</p>
-                    {% endif %}
+                </div>
+                {% endif %}
             </form>
         </section>
     </div>
-    <div class="col-md-4">
+    <div class="col">
         <section id="socialLoginForm"></section>
     </div>
 </div>
@@ -46,13 +50,14 @@
 
 {% block scripts %}
 {% load staticfiles %}
-<script src="{% static 'app/scripts/jquery.validate.min.js' %}"></script>
+<script src="{% static 'baseapp/js/jquery.validate.js' %}"></script>
 
 <script>
     $("form").validate({
         rules: {
             required: true,
         },
+    });
 </script>
 
 {% endblock %}
