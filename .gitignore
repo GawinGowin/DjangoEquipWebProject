@@ -1,6 +1,9 @@
 .vs/
 /.vscode
 
+**/media/equipment/
+**/obj
+
 **/migrations/**
 !**/migrations
 !**/migrations/__init__.py
