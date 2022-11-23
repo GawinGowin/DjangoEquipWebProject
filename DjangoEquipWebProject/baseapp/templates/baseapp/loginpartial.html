@@ -1,0 +1,20 @@
+﻿{% if user.is_authenticated %}
+<form id="logoutForm" action="/logout/" method="post" class="navbar-right">
+    {% csrf_token %}
+    <ul class="nav navbar-nav navbar-right">
+        {% if user.is_superuser %}
+        <li><span class="navbar-brand">お疲れ様です。サイト管理者 {{ user.username }}</span></li>
+        {% elif user.is_staff %}
+        <li><span class="navbar-brand">お疲れ様です。{{ user.username }}</span></li>
+        {% else %}
+        <li><span class="navbar-brand">ようこそ。 {{ user.username }}</span></li>
+        {% endif %}
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log out</a></li>
+    </ul>
+</form>
+
+{% else %}
+<ul class="nav navbar-nav navbar-right">
+    <li><a href="{% url 'login' %}">Log in</a></li>
+</ul>
+{% endif %}

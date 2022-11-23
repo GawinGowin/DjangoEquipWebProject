@@ -1,0 +1,122 @@
+﻿{% extends "baseapp/layout.html" %}
+
+{% block content %}
+
+<div class="col-md-4"><h2>{{title}}</h2></div>
+<div class="col-md-8"><h3><a href="{% url 'lend_list' %}" class="btn btn-primary btn-large">返却はこちら&raquo;</a></h3></div>
+
+<h4>使用方法について</h4>
+<ul>
+    <li><p>利用者ユーザーでログインした状態で、貸出ボタンを押すだけです。</p></li>
+    <li><p>その他借りる際の付記事項があれば、入力した状態で貸出ボタンを押して下さい。</p></li>
+    <li><p>個数指定や、複数の利用者で本数を分担する場合などもメモ欄がご利用いただけます。</p></li>
+    <li><p>メモ欄を貸出後に変更することは出来ないので，返却した後再度貸出手続きをお願いします。</p></li>
+</ul>
+
+
+{% if error %}
+<div class="col-md-12" style="text-align: center; background: #fff0f0; border-radius: 10px; border: solid 1px #888880; margin: 15px 0 10px;">
+    <h4 style="color: #901;">{{error}}</h4>
+    <p>他ユーザが利用を開始したか、サイトを再読み込みするとこのメッセージが出るかもしれません</p>
+    <p>申し訳ない</p>
+</div>
+{% endif %}
+
+{% if success %}
+<div class="col-md-12" style="text-align: center; background: #d1e7dd; border-radius: 10px; border: solid 1px #888880; margin: 15px 0 10px;">
+    <h4 style="color: #093;">{{success}}</h4>
+    <p>{{success_item}} の貸出が完了しました</p>
+    <p>{{success_lend_date}}～{{success_return_date}}の{{success_lend_span}}日間の貸出です</p>
+</div>
+{% endif %}
+
+{% for item in equip_list %}
+<form action="" method="post" id="{{item.pk}}">
+    {% csrf_token %}
+</form>
+{% endfor %}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">名称</th>
+            <th scope="col">カテゴリ</th>
+            <th scope="col" style="text-align: center;">管理番号</th>
+            <th scope="col" style="text-align: center;">利用</th>
+            <th scope="col" style="text-align: center;">現利用者</th>
+            <th scope="col" width="30%" style="text-align: center;">貸出時メモ</th>
+            <th scope="col" style="text-align: center;">貸出</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in equip_list %}
+        <tr>
+            <th scope="row"><a href="{% url 'detail' item.pk %}">{{item.name}}</a></th>
+            <td>{{item.category}}</td>
+
+            {% if item.management_num %}
+            <td style="text-align: center;">{{item.management_num}}</td>
+            {% else %}
+            <td style="text-align: center;">-</td>
+            {% endif%}
+
+            {% if item.related_itemname %} <!--履歴情報があるならばそれを読み込む-->
+            {% if item.related_itemname.available == "不可" %}
+            <td bgcolor="#f1aeb5" style="text-align: center;">{{item.related_itemname.available}}</td>
+            {% else %}
+            <td bgcolor="#9ec5fe" style="text-align: center;">{{item.related_itemname.available}}</td>
+            {% endif%}
+
+            {% if item.related_itemname.now_user is not None %}
+            <td bgcolor="#f1aeb5" style="text-align: center;">{{item.related_itemname.now_user}}</td>
+            {% else %}
+            <td bgcolor="#9ec5fe" style="text-align: center;">-</td>
+            {% endif%}
+
+            {% else %} <!--履歴情報が一切なければ必ず利用可能なはず-->
+            <td bgcolor="#9ec5fe" style="text-align: center;">可</td>
+            <td bgcolor="#9ec5fe" style="text-align: center;">-</td>
+            {% endif %}
+
+            <!--フォームはここから-->
+            <td style="text-align: center;">
+                <input type="hidden" name="item_name" form="{{item.pk}}" value="{{item.pk}}"
+                       class="form-control" />
+                {% if item.related_itemname.available == "不可" %}
+                <input type="text" name="note" form="{{item.pk}}" maxlength="140" placeholder="メモ欄(最大140文字)"
+                       style="width:300px;" class="form-control" readonly>
+                {% else %}
+                <input type="text" name="note" form="{{item.pk}}" maxlength="140" placeholder="メモ欄(最大140文字)"
+                       style="width:300px;" class="form-control">
+                {% endif%}
+            </td>
+            <td style="text-align: center;">
+                {% if item.related_itemname.available == "不可" %}
+                <button type="button" class="btn btn-secondary btn-large">貸出開始</button>
+                {% else %}
+                <input type="submit" value="貸出開始" form="{{item.pk}}" class="btn btn-primary btn-large" />
+                {% endif%}
+            </td>
+            <!--ここまで-->
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<ul>
+    <li><p>アイテムの登録・削除は管理者アカウントでしか実施できません</p></li>
+</ul>
+
+{% block scripts %}
+{% load staticfiles %}
+<script src="{% static 'baseapp/scripts/jquery.validate.min.js' %}"></script>
+<script>
+    $("form").validate({
+        // バリデーションルール
+        rules: {
+            required: true,
+        },
+</script>
+
+{% endblock %}
+{% endblock %}

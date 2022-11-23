@@ -1,0 +1,104 @@
+{% extends "baseapp/layout.html" %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-10"><h2>{{title}}</h2></div>
+        <div class="col-md-2"><h3><a href="{% url 'list' %}" class="btn btn-primary btn-large">戻る&raquo;</a></h3></div>
+    </div>
+
+    <div class="row">
+        <h3>{{object.name}}</h3>
+        <div class="col-md-4">
+            {% if object.images %}
+            <img src="{{object.images.url}}" class="img-thumbnail" alt="{{object.name}}">
+            {% else %}
+            <img src="{{object.alt_image.url}}" class="img-thumbnail" alt="No img">
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <table class="table table-borderless">
+                <tr>
+                    <td>カテゴリ</td>
+                    <td>{{object.category}}</td>
+                </tr>
+                <tr>
+                    <td>管理番号</td>
+                    <td>{{object.management_num}}</td>
+                </tr>
+                <tr>
+                    <td>メーカー</td>
+                    <td>{{object.maker}}</td>
+                </tr>
+                <tr>
+                    <td>特徴</td>
+                    <td>{{object.feature}}</td>
+                </tr>
+                <tr>
+                    <td>サイズなど</td>
+                    <td>{{object.size}}</td>
+                </tr>
+                <tr>
+                    <td>個数・本数</td>
+                    <td>{{object.num}}</td>
+                </tr>
+                <tr>
+                    <td>販売サイトなどのURL</td>
+                    <td><a href="{{object.URL}}">{{object.URL}}</a></td>
+                </tr>
+                <tr>
+                    <td>購入時期</td>
+                    <td>{{object.purchase_date}}</td>
+                </tr>
+                <tr>
+                    <td>ステータス</td>
+                    <td>{{object.status}}</td>
+                </tr>
+                <tr>
+                    <td>メモ</td>
+                    <td><p>{{object.note | linebreaksbr}}</p></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container">
+    {% if object.related_itemname %} <!--履歴情報があるならばそれを読み込む-->
+    <div class="row">
+        <div class="col-md-6">
+            <h3>
+                利用状況
+                {% if object.related_itemname.available == "可" %}
+                <span class="badge badge-pill badge-primary">利用{{object.related_itemname.available}}能</span>
+                {% else %}
+                <span class="badge badge-pill badge-danger">利用{{object.related_itemname.available}}能</span>
+                {% endif %}
+            </h3>
+            <table class="table table-borderless">
+                <tr>
+                    <td>累計利用回数</td>
+                    <td>{{object.related_itemname.times}}回</td>
+                </tr>
+                <tr>
+                    <td>現在の利用者</td>
+                    <td>{{object.related_itemname.now_user}}</td>
+                </tr>
+                <tr>
+                    <td>前回の利用者</td>
+                    <td>{{object.related_itemname.previous_user}}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h3>履歴</h3>
+            <p style="height: 120px; overflow-y: scroll;">
+                &lt;操作&gt;,利用者,利用開始日,返却予定日,貸出期間(日),メモ<br>
+                {{object.related_itemname.history | linebreaksbr }}
+            </p>
+        </div>
+    </div>
+    {% else %} <!--履歴情報が一切ないとき-->
+    <p>これまでの利用履歴がありません</p>
+    {% endif %}
+</div>
+{% endblock %}

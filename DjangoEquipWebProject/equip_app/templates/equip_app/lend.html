@@ -1,0 +1,84 @@
+﻿{% extends "baseapp/layout.html" %}
+
+{% block content %}
+
+<div class="col-md-4"><h2>{{title}}</h2></div>
+<div class="col-md-8"><h3><a href="{% url 'lend_create' %}" class="btn btn-primary btn-large">貸出はこちら&raquo;</a></h3></div>
+
+<h4>使用方法について</h4>
+<ul>
+    <li><p>ここにはあなたが現在借りている装備のリストが表示されます</p></li>
+    <li><p>返却ボタンを押すと、返却が完了します</p></li>
+</ul>
+
+{% if hard_error %}
+<div class="col-md-12" style="text-align: center; background: #fff0f0; border-radius: 10px; border: solid 1px #888880; margin: 15px 0 10px;">
+    <h4 style="color: #901;">{{hard_error}}</h4>
+    <p>サイト作成者もこのメッセージが出ることを想定していません</p>
+
+</div>
+{% endif %}
+
+{% if error %}
+<div class="col-md-12" style="text-align: center; background: #fff0f0; border-radius: 10px; border: solid 1px #888880; margin: 15px 0 10px;">
+    <h4 style="color: #901;">{{error}}</h4>
+    <p>サイトを再読み込みするとこのメッセージが出るかもしれません</p>
+    <p>悪しからず</p>
+</div>
+{% endif %}
+
+{% if success %}
+<div class="col-md-12" style="text-align: center; background: #d1e7dd; border-radius: 10px; border: solid 1px #888880; margin: 15px 0 10px;">
+    <h4 style="color: #093;">{{success}}</h4>
+    <p>{{success_item}} の返却が完了しました</p>
+    <p>返却日 : {{success_return_date}}</p>
+    <p>ご利用ありがとうございました</p>
+</div>
+{% endif %}
+
+{% for item in lend_list %}
+<form action="" method="post" id="{{item.pk}}">
+    {% csrf_token %}
+</form>
+{% endfor %}
+
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">利用者</th>
+                <th scope="col">装備</th>
+                <th scope="col" style="text-align: center;">利用開始日</th>
+                <th scope="col" style="text-align: center;">返却予定日</th>
+                <th scope="col" style="text-align: center;">メモ欄</th>
+                <th scope="col" style="text-align: center;">返却</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if lend_list %}
+            {% for item in lend_list %}
+            <tr>
+                <th scope="row">{{item.user}}</th>
+                <td><a href="{% url 'detail' item.item_name.id %}">{{item.item_name}}</a></td>
+                <td style="text-align: center;">{{item.lend_date}}</td>
+                <td style="text-align: center;">{{item.return_date}}</td>
+                <td style="text-align: center;">{{item.note}}</td>
+                <td style="text-align: center;">
+                    <input type="hidden" value="{{item.pk}}" name="lend_name" form="{{item.pk}}" />
+                    <input type="hidden" value="{{item.item_name.pk}}" name="item_name" form="{{item.pk}}" />
+                    <input type="submit" value="返却" form="{{item.pk}}" class="btn btn-primary btn-large" />
+                </td>
+            </tr>
+            {% endfor %}
+
+            {% else %}
+            <tr>
+                <td colspan="6">現在貸出中の装備はありません</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "baseapp/layout.html" %}
+
+{% block content %}
+
+<div class="col-md-2"><h2>{{title}}</h2></div>
+<div class="col-md-10"><h3><a href="{% url 'lend_create' %}" class="btn btn-primary btn-large">貸出画面はこちら&raquo;</a></h3></div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">名称</th>
+            <th scope="col">カテゴリ</th>
+            <th scope="col">メーカー</th>
+            <th scope="col" style="text-align: center;">管理番号</th>
+            <th scope="col" style="text-align: center;">個数・本数</th>
+            <th scope="col" style="text-align: center;">利用</th>
+            <th scope="col" style="text-align: center;">現利用者</th>
+            <th scope="col" style="text-align: center;">前回利用者</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in equip_list %}
+        <tr>
+            <th scope="row"><a href="{% url 'detail' item.pk %}">{{item.name}}</a></th>
+            <td>{{item.category}}</td>
+            <td>{{item.maker}}</td>
+            {% if item.management_num %}
+            <td style="text-align: center;">{{item.management_num}}</td>
+            {% else %}
+            <td style="text-align: center;">-</td>
+            {% endif%}
+
+            <td style="text-align: center;">{{item.num}}</td>
+
+            {% if item.related_itemname %} <!--履歴情報があるならばそれを読み込む-->
+            {% if item.related_itemname.available == "可" %} <!--利用可能な時-->
+            <td bgcolor="#9ec5fe" style="text-align: center;">{{item.related_itemname.available}}</td>
+            <td bgcolor="#9ec5fe" style="text-align: center;">-</td>
+            {% else %}<!--利用不可能な時-->
+            <td bgcolor="#f1aeb5" style="text-align: center;">{{item.related_itemname.available}}</td>
+            <td bgcolor="#f1aeb5" style="text-align: center;">{{item.related_itemname.now_user}}</td>
+            {% endif %}
+
+            {% if item.related_itemname.previous_user %}
+            <td style="text-align: center;">{{item.related_itemname.previous_user}}</td>
+            {% else %}
+            <td style="text-align: center;">-</td>
+            {% endif %}
+
+            {% else %} <!--履歴情報が一切なければ必ず利用可能なはず-->
+            <td bgcolor="#9ec5fe" style="text-align: center;">可</td>
+            <td bgcolor="#9ec5fe" style="text-align: center;">-</td>
+            <td style="text-align: center;">-</td>
+            {% endif %}
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div style="text-align: center;">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}">前へ</a>
+    {% endif %}
+
+    <p>{{ page_obj.number }}/{{ page_obj.paginator.num_pages }}</p>
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">次へ</a>
+    {% endif %}
+</div>
+
+<ul>
+    <li><p>アイテムの登録・削除は管理者アカウントでしか実施できません</p></li>
+</ul>
+
+{% endblock %}
